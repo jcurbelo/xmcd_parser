@@ -24,3 +24,43 @@ id_define_dict2 = {
         "ml:real": "24.00"
     }
 }
+div_with_two_literals = {"ml:apply": {
+    "ml:div": None,
+    "ml:real": [
+        "1",
+        "2"
+    ]
+}}
+div_with_two_access = {
+    "ml:apply": {
+        "ml:div": None,
+        "ml:id": [
+            {
+                "#text": "B",
+                "@subscript": "p",
+                "@xml:space": "preserve"
+            },
+            {
+                "#text": "E",
+                "@xml:space": "preserve"
+            }
+        ]
+    }
+}
+div_with_one_literal_one_access = {"ml:apply": {
+    "ml:div": None,
+    "ml:id": {
+        "#text": "n",
+        "@subscript": "y",
+        "@xml:space": "preserve"
+    },
+    "ml:real": "1"
+}}
+
+pow_with_two_literals = {"ml:apply": {
+    "ml:pow": None,
+    "ml:real": [
+        "3.1416",
+        "2"
+    ]
+}}
