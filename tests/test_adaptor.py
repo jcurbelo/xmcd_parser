@@ -28,6 +28,10 @@ def test_adaptor_div_with_two_ids():
     assert isinstance(node, DivNode)
 
 
+def test_adaptor_min_with_div_and_mult():
+    node = adaptor(min_with_div_and_mult, scope)
+    assert isinstance(node, DefinitionNode)
+
 # def test_adaptor_div_with_one_id_one_literal():
 #     node = adaptor(div_with_one_literal_one_access, scope)
 #     assert isinstance(node, DivNode)

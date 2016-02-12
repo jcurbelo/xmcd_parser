@@ -26,6 +26,19 @@ def test_eval_div_with_two_ids():
     assert node.eval() == 1. / 2
 
 
+def test_ast_min_with_div_and_mult():
+    #  F_b = min(F_ty / n_y, F_tu / (K_t * n_u))
+    F_ty, n_y, F_tu, K_t, n_u = 3.4, 50, 80, 45.90, 0.99
+    scope = {
+        'F_ty': F_ty,
+        'n_y': n_y,
+        'F_tu': F_tu,
+        'K_t': K_t,
+        'n_u': n_u
+    }
+    node = adaptor(min_with_div_and_mult, scope)
+    assert node.eval() == min(F_ty / n_y, F_tu / (K_t * n_u))
+
 # def test_eval_div_with_one_id_one_literal():
 #     scope['n_y'] = 4.
 #     node = adaptor(div_with_one_literal_one_access, scope)
