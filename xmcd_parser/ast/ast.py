@@ -38,9 +38,9 @@ class IdNode(ExpressionNode):
         return self.scope.get(self.id, None)
 
     def get_id(self, *args, **kwargs):
-        id = self.xml_attr.get('#text', 'UNKNOWN')
-        if '@subscript' in self.xml_attr:
-            return '{0}_{1}'.format(id, self.xml_attr['@subscript'])
+        id = self.raw_text or 'UNKNOWN'
+        if 'subscript' in self.xml_attr:
+            return '{0}_{1}'.format(id, self.xml_attr['subscript'])
         return id
 
 

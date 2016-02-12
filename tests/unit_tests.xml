@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<tests version="3.0.3" xmlns="http://schemas.mathsoft.com/worksheet30" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ws="http://schemas.mathsoft.com/worksheet30" xmlns:ml="http://schemas.mathsoft.com/math30" xmlns:u="http://schemas.mathsoft.com/units10" xmlns:p="http://schemas.mathsoft.com/provenance10">
+    <math>
+        <ml:apply>
+            <ml:div/>
+            <ml:id xml:space="preserve" subscript="ty">F</ml:id>
+            <ml:id xml:space="preserve" subscript="y">n</ml:id>
+        </ml:apply>
+    </math>
+
+    <math>
+        <ml:apply>
+            <ml:div/>
+            <ml:real>1</ml:real>
+            <ml:real>2</ml:real>
+        </ml:apply>
+    </math>
+</tests>

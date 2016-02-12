@@ -7,7 +7,7 @@ scope = VARIABLES
 
 
 def test_adaptor_definition_id_node():
-    id_define_list = [id_define_dict1, id_define_dict2]
+    id_define_list = [id_define_dict1.getchildren()[0], id_define_dict2.getchildren()[0]]
     for id in id_define_list:
         node = adaptor(id, scope)
         assert isinstance(node, DefinitionNode)
@@ -28,16 +28,16 @@ def test_adaptor_div_with_two_ids():
     assert isinstance(node, DivNode)
 
 
-def test_adaptor_div_with_one_id_one_literal():
-    node = adaptor(div_with_one_literal_one_access, scope)
-    assert isinstance(node, DivNode)
-
-
-def test_adaptor_pow_with_two_literals():
-    node = adaptor(pow_with_two_literals, scope)
-    assert isinstance(node, PowNode)
-
-
-def test_adaptor_div_with_mult():
-    node = adaptor(div_with_mult, scope)
-    assert isinstance(node, DivNode)
+# def test_adaptor_div_with_one_id_one_literal():
+#     node = adaptor(div_with_one_literal_one_access, scope)
+#     assert isinstance(node, DivNode)
+#
+#
+# def test_adaptor_pow_with_two_literals():
+#     node = adaptor(pow_with_two_literals, scope)
+#     assert isinstance(node, PowNode)
+#
+#
+# def test_adaptor_div_with_mult():
+#     node = adaptor(div_with_mult, scope)
+#     assert isinstance(node, DivNode)
