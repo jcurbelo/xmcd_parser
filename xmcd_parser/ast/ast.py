@@ -80,6 +80,12 @@ class PowNode(OperatorNode):
         self.op_func = lambda x, y: x ** y
 
 
+class SqrtNode(OperatorNode):
+    def __init__(self, *args, **kwargs):
+        super(SqrtNode, self).__init__(*args, **kwargs)
+        self.op_func = lambda x, _: x ** (1 / 2.)
+
+
 class LiteralNode(ExpressionNode):
     pass
 

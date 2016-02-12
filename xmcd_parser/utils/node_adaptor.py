@@ -10,7 +10,8 @@ operators = {
     'plus': lambda el, s: PlusNode(operator_name='plus', expression_list=el, scope=s),
     'minus': lambda el, s: MinusNode(operator_name='minus', expression_list=el, scope=s),
     'pow': lambda el, s: PowNode(operator_name='pow', expression_list=el, scope=s),
-    'min': lambda el, s: MinNode(operator_name='div', expression_list=el, scope=s)
+    'min': lambda el, s: MinNode(operator_name='div', expression_list=el, scope=s),
+    'sqrt': lambda el, s: SqrtNode(operator_name='sqrt', expression_list=el, scope=s)
 }
 
 
