@@ -11,6 +11,9 @@ class ExpressionNode(object):
     def eval(self, *args, **kwargs):
         pass
 
+    def str_tree(self, depth):
+        pass
+
 
 class InstructionNode(ExpressionNode):
     pass
@@ -23,6 +26,14 @@ class OperatorNode(ExpressionNode):
         self.expression_list = kwargs.get('expression_list', [])
         self.op_func = None
 
+    def str_tree(self, depth):
+        result = '{2}<{0}>: {1}'.format(self.operator_name + 'Node',
+                                        self.eval(),
+                                        '\t' * depth)
+        for e in self.expression_list:
+            result += '\n{0}'.format(e.str_tree(depth + 1))
+        return result
+
     def eval(self, *args, **kwargs):
         super(OperatorNode, self).eval(*args, **kwargs)
         return reduce(self.op_func, [e.eval() for e in self.expression_list])
@@ -32,6 +43,11 @@ class IdNode(ExpressionNode):
     def __init__(self, *args, **kwargs):
         super(IdNode, self).__init__(*args, **kwargs)
         self.id = self.get_id()
+
+    def str_tree(self, depth):
+        return '{2}<{0}>: "{1}"'.format(self.__class__.__name__,
+                                        self.id,
+                                        '\t' * depth)
 
     def eval(self, *args, **kwargs):
         super(IdNode, self).eval(*args, **kwargs)
@@ -91,6 +107,11 @@ class LiteralNode(ExpressionNode):
 
 
 class FloatNode(LiteralNode):
+    def str_tree(self, depth):
+        return '{2}<{0}>: {1}'.format(self.__class__.__name__,
+                                      self.eval(),
+                                      '\t' * depth)
+
     def eval(self, *args, **kwargs):
         super(FloatNode, self).eval(*args, **kwargs)
         return float(self.raw_text)
@@ -110,6 +131,13 @@ class DefinitionNode(AssignmentNode):
         super(DefinitionNode, self).__init__(*args, **kwargs)
         self.left = kwargs.get('left', None)
         self.body = kwargs.get('body', None)
+
+    def str_tree(self, depth):
+        return '{4}<{0}>: {1}\n{2}\n{3}'.format(self.__class__.__name__,
+                                                self.eval(),
+                                                self.left.str_tree(depth + 1),
+                                                self.body.str_tree(depth + 1),
+                                                '\t' * depth)
 
     def eval(self, *args, **kwargs):
         super(DefinitionNode, self).eval(*args, **kwargs)

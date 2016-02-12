@@ -16,9 +16,14 @@ def main():
         n = nodes[i]
         if n:
             try:
-                n.eval()
+                # n.eval()
+                print n.str_tree(0)
+                print
             except Exception as e:
-                print 'ERROR IN NODE[{0}] \n {1}'.format(i, e)
+                print 'ERROR IN NODE[{0}]({1}) \n {2}'.format(i, n.__class__.__name__, e)
+                # pass
+    print
+    print '#' * 5 + 'SCOPE'
     print scope
 
 
