@@ -39,6 +39,14 @@ def test_ast_min_with_div_and_mult():
     node = adaptor(min_with_div_and_mult, scope)
     assert node.eval() == min(F_ty / n_y, F_tu / (K_t * n_u))
 
+
+def test_ast_div_with_minus_and_parens():
+    scope['B_c'] = 3.0
+    scope['F_cy'] = 4.5
+    scope['D_c'] = 4.00009
+    node = adaptor(div_with_minus_and_parens, scope)
+    assert node.eval() == -0.4499898752278073
+
 # def test_eval_div_with_one_id_one_literal():
 #     scope['n_y'] = 4.
 #     node = adaptor(div_with_one_literal_one_access, scope)

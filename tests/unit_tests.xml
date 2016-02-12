@@ -43,4 +43,25 @@
             </ml:apply>
         </ml:define>
     </math>
+
+    <math optimize="true" disable-calc="false">
+        <ml:define xmlns:ml="http://schemas.mathsoft.com/math30">
+            <ml:id xml:space="preserve" subscript="1">S</ml:id>
+            <ml:apply>
+                <ml:div/>
+                <ml:apply>
+                    <ml:mult/>
+                    <ml:real>1.2</ml:real>
+                    <ml:parens>
+                        <ml:apply>
+                            <ml:minus/>
+                            <ml:id xml:space="preserve" subscript="c">B</ml:id>
+                            <ml:id xml:space="preserve" subscript="cy">F</ml:id>
+                        </ml:apply>
+                    </ml:parens>
+                </ml:apply>
+                <ml:id xml:space="preserve" subscript="c">D</ml:id>
+            </ml:apply>
+        </ml:define>
+    </math>
 </tests>
