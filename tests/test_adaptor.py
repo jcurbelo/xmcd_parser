@@ -36,3 +36,8 @@ def test_adaptor_div_with_one_id_one_literal():
 def test_adaptor_pow_with_two_literals():
     node = adaptor(pow_with_two_literals, scope)
     assert isinstance(node, PowNode)
+
+
+def test_adaptor_div_with_mult():
+    node = adaptor(div_with_mult, scope)
+    assert isinstance(node, DivNode)

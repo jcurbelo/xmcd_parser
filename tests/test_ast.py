@@ -35,3 +35,11 @@ def test_eval_div_with_one_id_one_literal():
 def test_eval_pow_with_two_literals():
     node = adaptor(pow_with_two_literals, scope)
     assert node.eval() == 3.1416 ** 2
+
+
+def test_eval_div_with_mult():
+    scope['K_t'] = 4.55
+    scope['n_u'] = 3.434
+    scope['F_tu'] = 0.44
+    node = adaptor(div_with_mult, scope)
+    assert node.eval() == 0.44 / (4.55 * 3.434)

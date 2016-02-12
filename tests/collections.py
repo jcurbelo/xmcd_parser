@@ -64,3 +64,26 @@ pow_with_two_literals = {"ml:apply": {
         "2"
     ]
 }}
+
+div_with_mult = {"ml:apply": {
+    "ml:apply": {
+        "ml:id": [
+            {
+                "#text": "K",
+                "@subscript": "t",
+                "@xml:space": "preserve"
+            },
+            {
+                "#text": "n",
+                "@subscript": "u",
+                "@xml:space": "preserve"
+            }
+        ],
+        "ml:mult": None
+    },
+    "ml:div": None,
+    "ml:id": {
+        "#text": "F",
+        "@subscript": "tu",
+        "@xml:space": "preserve"
+    }}}
