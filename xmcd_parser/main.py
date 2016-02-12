@@ -13,7 +13,7 @@ def main():
         adaptor(el, {})
     print ''
     scope = VARIABLES
-    nodes = [adaptor(m.getchildren[0], scope) for m in maths[:20]]
+    nodes = [adaptor(m.getchildren()[0], scope) for m in maths[:20]]
     print nodes
     for n in nodes:
         n.eval()

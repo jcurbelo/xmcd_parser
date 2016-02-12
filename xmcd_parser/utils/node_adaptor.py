@@ -1,9 +1,8 @@
-from xmcd_parser.ast.ast import *
+try:
+    from xmcd_parser.ast.ast import *
+except ImportError:
+    from ast.ast import *
 
-
-keywords = {
-    'min': lambda rt, xa, s: MinNode(raw_text=rt, xml_attr=xa, scope=s)
-}
 
 operators = {
     'div': lambda el, s: DivNode(operator_name='div', expression_list=el, scope=s),
@@ -11,6 +10,7 @@ operators = {
     'plus': lambda el, s: PlusNode(operator_name='plus', expression_list=el, scope=s),
     'minus': lambda el, s: MinusNode(operator_name='minus', expression_list=el, scope=s),
     'pow': lambda el, s: PowNode(operator_name='pow', expression_list=el, scope=s),
+    'min': lambda el, s: MinNode(operator_name='div', expression_list=el, scope=s)
 }
 
 
@@ -21,16 +21,23 @@ def _literal(el, scope):
 
 
 def _identifier(el, scope):
-    default = lambda rt, xa, s: IdNode(raw_text=rt, xml_attr=xa, scope=s)
-    return keywords.get(el.text, default)(el.text, el.attrib, scope)
+    return IdNode(raw_text=el.text, xml_attr=el.attrib, scope=scope)
 
 
 def _instruction(els, scope):
     # This refers to <apply>
     op = els[0]
     # Removing namespace
-    op = op.tag.split('}')[1]
-    return operators[op]([adaptor(el, scope) for el in els[1:]], scope)
+    tag = op.tag.split('}')[1]
+    if tag == 'id':
+        tag = op.text
+    el_list = []
+    for el in els[1:]:
+        if 'sequence' in el.tag:
+            el_list += el.getchildren()
+        else:
+            el_list.append(el)
+    return operators[tag]([adaptor(el, scope) for el in el_list], scope)
 
 
 def _definition(els, scope):
