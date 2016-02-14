@@ -29,13 +29,13 @@ def test_eval_div_with_two_ids():
 def test_ast_min_with_div_and_mult():
     #  F_b = min(F_ty / n_y, F_tu / (K_t * n_u))
     F_ty, n_y, F_tu, K_t, n_u = 3.4, 50, 80, 45.90, 0.99
-    scope = {
+    scope.update({
         'F_ty': F_ty,
         'n_y': n_y,
         'F_tu': F_tu,
         'K_t': K_t,
         'n_u': n_u
-    }
+    })
     node = adaptor(min_with_div_and_mult, scope)
     assert node.eval() == min(F_ty / n_y, F_tu / (K_t * n_u))
 
@@ -46,6 +46,17 @@ def test_ast_div_with_minus_and_parens():
     scope['D_c'] = 4.00009
     node = adaptor(div_with_minus_and_parens, scope)
     assert node.eval() == -0.4499898752278073
+
+
+def test_node_if_then():
+    scope['S_element.bend'] = 3.9
+    scope['S_2'] = 34.0
+    scope['L_b'] = 56.0
+    scope['r_y'] = 45.8
+    scope['C_b'] = 45.9
+    scope['E'] = 45.0
+    node = adaptor(if_then_node, scope)
+    assert node.eval() == 0.038688715738600145
 
 # def test_eval_div_with_one_id_one_literal():
 #     scope['n_y'] = 4.

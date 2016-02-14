@@ -16,10 +16,29 @@ class ExpressionNode(object):
 
 
 class InstructionNode(ExpressionNode):
+    """
+    Expression that returns a value
+    """
     pass
 
 
-class OperatorNode(ExpressionNode):
+class IfThenNode(InstructionNode):
+    def __init__(self, *args, **kwargs):
+        super(IfThenNode, self).__init__(*args, **kwargs)
+        self.cond = kwargs.get('cond', None)
+        self.expr = kwargs.get('expr', None)
+
+    def eval(self, *args, **kwargs):
+        super(IfThenNode, self).eval(*args, **kwargs)
+        cond_value = self.cond.bool_eval()
+        # if the condition was True, then we evaluate the expression
+        # and return its value as result, otherwise we return False
+        if cond_value:
+            return self.expr.eval()
+        return False
+
+
+class OperatorNode(InstructionNode):
     def __init__(self, *args, **kwargs):
         super(OperatorNode, self).__init__(*args, **kwargs)
         self.operator_name = kwargs.get('operator_name', None)
@@ -51,7 +70,10 @@ class IdNode(ExpressionNode):
 
     def eval(self, *args, **kwargs):
         super(IdNode, self).eval(*args, **kwargs)
-        return self.scope.get(self.id, None)
+        value = self.scope.get(self.id, None)
+        if not value:
+            raise ValueError('{0} has no value for {1}'.format(type(self), self.id))
+        return value
 
     def get_id(self, *args, **kwargs):
         id = self.raw_text or 'UNKNOWN'
@@ -64,6 +86,12 @@ class MinNode(OperatorNode):
     def __init__(self, *args, **kwargs):
         super(MinNode, self).__init__(*args, **kwargs)
         self.op_func = lambda x, y: min(x, y)
+
+
+class MaxNode(OperatorNode):
+    def __init__(self, *args, **kwargs):
+        super(MaxNode, self).__init__(*args, **kwargs)
+        self.op_func = lambda x, y: max(x, y)
 
 
 class DivNode(OperatorNode):
@@ -100,6 +128,32 @@ class SqrtNode(OperatorNode):
     def __init__(self, *args, **kwargs):
         super(SqrtNode, self).__init__(*args, **kwargs)
         self.op_func = lambda x, _: x ** (1 / 2.)
+
+
+class ComparisonOperator(OperatorNode):
+    def eval(self, *args, **kwargs):
+        return self.expression_list[-1].eval()
+
+    def bool_eval(self, *args, **kwargs):
+        return super(ComparisonOperator, self).eval(*args, **kwargs)
+
+
+class LessOrEqualNode(ComparisonOperator):
+    def __init__(self, *args, **kwargs):
+        super(LessOrEqualNode, self).__init__(*args, **kwargs)
+        self.op_func = lambda x, y: x <= y
+
+
+class LessThanNode(ComparisonOperator):
+    def __init__(self, *args, **kwargs):
+        super(LessThanNode, self).__init__(*args, **kwargs)
+        self.op_func = lambda x, y: x < y
+
+
+class GreaterThanNode(ComparisonOperator):
+    def __init__(self, *args, **kwargs):
+        super(GreaterThanNode, self).__init__(*args, **kwargs)
+        self.op_func = lambda x, y: x > y
 
 
 class LiteralNode(ExpressionNode):
@@ -143,7 +197,13 @@ class DefinitionNode(AssignmentNode):
         super(DefinitionNode, self).eval(*args, **kwargs)
         # Assuming IdNode
         id = self.left.id
-        value = self.body.eval()
+        b = self.body
+        if type(b) is list:
+            # Get the first element that has a value
+            # TODO: Find Lazy Evaluation solution
+            value = next(v for v in [n.eval() for n in b] if v)
+        else:
+            value = b.eval()
         self.scope[id] = value
         # Return evaluation
         return value

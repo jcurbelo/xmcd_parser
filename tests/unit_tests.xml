@@ -64,4 +64,119 @@
             </ml:apply>
         </ml:define>
     </math>
+
+    <math>
+        <ml:define xmlns:ml="http://schemas.mathsoft.com/math30">
+            <ml:id xml:space="preserve" subscript="bc">F</ml:id>
+            <ml:program>
+                <ml:ifThen>
+                    <ml:apply>
+                        <ml:lessOrEqual/>
+                        <ml:id xml:space="preserve" subscript="element.bend">S</ml:id>
+                        <ml:id xml:space="preserve" subscript="1">S</ml:id>
+                    </ml:apply>
+                    <ml:apply>
+                        <ml:div/>
+                        <ml:id xml:space="preserve" subscript="cy">F</ml:id>
+                        <ml:id xml:space="preserve" subscript="y">n</ml:id>
+                    </ml:apply>
+                </ml:ifThen>
+                <ml:ifThen>
+                    <ml:apply>
+                        <ml:lessOrEqual/>
+                        <ml:apply>
+                            <ml:lessThan/>
+                            <ml:id xml:space="preserve" subscript="1">S</ml:id>
+                            <ml:id xml:space="preserve" subscript="element.bend">S</ml:id>
+                        </ml:apply>
+                        <ml:id xml:space="preserve" subscript="2">S</ml:id>
+                    </ml:apply>
+                    <ml:apply>
+                        <ml:mult/>
+                        <ml:apply>
+                            <ml:div/>
+                            <ml:real>1</ml:real>
+                            <ml:id xml:space="preserve" subscript="y">n</ml:id>
+                        </ml:apply>
+                        <ml:parens>
+                            <ml:apply>
+                                <ml:minus/>
+                                <ml:id xml:space="preserve" subscript="c">B</ml:id>
+                                <ml:apply>
+                                    <ml:div/>
+                                    <ml:apply>
+                                        <ml:mult/>
+                                        <ml:apply>
+                                            <ml:mult/>
+                                            <ml:id xml:space="preserve" subscript="c">D</ml:id>
+                                            <ml:id xml:space="preserve" subscript="b">L</ml:id>
+                                        </ml:apply>
+                                        <ml:real>12</ml:real>
+                                    </ml:apply>
+                                    <ml:apply>
+                                        <ml:mult/>
+                                        <ml:apply>
+                                            <ml:mult/>
+                                            <ml:real>1.2</ml:real>
+                                            <ml:id xml:space="preserve" subscript="y">r</ml:id>
+                                        </ml:apply>
+                                        <ml:apply>
+                                            <ml:sqrt/>
+                                            <ml:id xml:space="preserve" subscript="b">C</ml:id>
+                                        </ml:apply>
+                                    </ml:apply>
+                                </ml:apply>
+                            </ml:apply>
+                        </ml:parens>
+                    </ml:apply>
+                </ml:ifThen>
+                <ml:ifThen>
+                    <ml:apply>
+                        <ml:greaterThan/>
+                        <ml:id xml:space="preserve" subscript="element.bend">S</ml:id>
+                        <ml:id xml:space="preserve" subscript="2">S</ml:id>
+                    </ml:apply>
+                    <ml:apply>
+                        <ml:div/>
+                        <ml:apply>
+                            <ml:mult/>
+                            <ml:apply>
+                                <ml:mult/>
+                                <ml:apply>
+                                    <ml:pow/>
+                                    <ml:real>3.1416</ml:real>
+                                    <ml:real>2</ml:real>
+                                </ml:apply>
+                                <ml:id xml:space="preserve">E</ml:id>
+                            </ml:apply>
+                            <ml:id xml:space="preserve" subscript="b">C</ml:id>
+                        </ml:apply>
+                        <ml:apply>
+                            <ml:mult/>
+                            <ml:id xml:space="preserve" subscript="y">n</ml:id>
+                            <ml:apply>
+                                <ml:pow/>
+                                <ml:parens>
+                                    <ml:apply>
+                                        <ml:div/>
+                                        <ml:apply>
+                                            <ml:mult/>
+                                            <ml:id xml:space="preserve" subscript="b">L</ml:id>
+                                            <ml:real>12</ml:real>
+                                        </ml:apply>
+                                        <ml:apply>
+                                            <ml:mult/>
+                                            <ml:real>1.2</ml:real>
+                                            <ml:id xml:space="preserve" subscript="y">r</ml:id>
+                                        </ml:apply>
+                                    </ml:apply>
+                                </ml:parens>
+                                <ml:real>2</ml:real>
+                            </ml:apply>
+                        </ml:apply>
+                    </ml:apply>
+                </ml:ifThen>
+            </ml:program>
+        </ml:define>
+    </math>
 </tests>

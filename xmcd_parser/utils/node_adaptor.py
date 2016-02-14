@@ -3,7 +3,6 @@ try:
 except ImportError:
     from ast.ast import *
 
-
 operators = {
     'div': lambda el, s: DivNode(operator_name='div', expression_list=el, scope=s),
     'mult': lambda el, s: MultNode(operator_name='mult', expression_list=el, scope=s),
@@ -11,7 +10,11 @@ operators = {
     'minus': lambda el, s: MinusNode(operator_name='minus', expression_list=el, scope=s),
     'pow': lambda el, s: PowNode(operator_name='pow', expression_list=el, scope=s),
     'min': lambda el, s: MinNode(operator_name='div', expression_list=el, scope=s),
-    'sqrt': lambda el, s: SqrtNode(operator_name='sqrt', expression_list=el, scope=s)
+    'max': lambda el, s: MaxNode(operator_name='max', expression_list=el, scope=s),
+    'sqrt': lambda el, s: SqrtNode(operator_name='sqrt', expression_list=el, scope=s),
+    'lessOrEqual': lambda el, s: LessOrEqualNode(operator_name='less_or_equal', expression_list=el, scope=s),
+    'lessThan': lambda el, s: LessOrEqualNode(operator_name='less_than', expression_list=el, scope=s),
+    'greaterThan': lambda el, s: GreaterThanNode(operator_name='greater_than', expression_list=el, scope=s),
 }
 
 
@@ -41,6 +44,13 @@ def _instruction(els, scope):
     return operators[tag]([adaptor(el, scope) for el in el_list], scope)
 
 
+def _cond_instruction(els, scope):
+    # IfThen nodes etc
+    cond = els[0]
+    expr = els[1]
+    return IfThenNode(scope=scope, cond=adaptor(cond, scope), expr=adaptor(expr, scope))
+
+
 def _definition(els, scope):
     left = els[0]
     body = els[1]
@@ -58,3 +68,8 @@ def adaptor(el, scope):
         return _instruction(el.getchildren(), scope)
     if 'parens' in el.tag:
         return adaptor(el.getchildren()[0], scope)
+    if 'ifThen' in el.tag:
+        return _cond_instruction(el.getchildren(), scope)
+    # List of instructions
+    if 'program' in el.tag:
+        return [adaptor(e, scope) for e in el.getchildren()]

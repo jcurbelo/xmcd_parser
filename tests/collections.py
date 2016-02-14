@@ -18,6 +18,7 @@ div_with_two_literals = umaths[1].getchildren()[0]
 div_with_two_access = umaths[0].getchildren()[0]
 min_with_div_and_mult = umaths[2].getchildren()[0]
 div_with_minus_and_parens = umaths[3].getchildren()[0]
+if_then_node = umaths[4].getchildren()[0]
 
 # div_with_one_literal_one_access = {"ml:apply": {
 #     "ml:div": None,
