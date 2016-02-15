@@ -18,6 +18,7 @@ keywords = {
     'if': lambda el, s: IfThenElseNode(cond=el[0], then_expr=el[1], else_expr=el[2] if len(el) > 2 else None),
     # Logical Operators
     'lessOrEqual': lambda el, s: LessOrEqualNode(operator_name='less_or_equal', expression_list=el, scope=s),
+    'greaterOrEqual': lambda el, s: GreaterOrEqualNode(operator_name='greater_or_equal', expression_list=el, scope=s),
     'lessThan': lambda el, s: LessOrEqualNode(operator_name='less_than', expression_list=el, scope=s),
     'greaterThan': lambda el, s: GreaterThanNode(operator_name='greater_than', expression_list=el, scope=s),
     'equal': lambda el, s: EqualNode(operator_name='equal', expression_list=el, scope=s),

@@ -168,6 +168,12 @@ class LessOrEqualNode(ComparisonOperator):
         self.op_func = lambda x, y: x <= y
 
 
+class GreaterOrEqualNode(ComparisonOperator):
+    def __init__(self, *args, **kwargs):
+        super(GreaterOrEqualNode, self).__init__(*args, **kwargs)
+        self.op_func = lambda x, y: x >= y
+
+
 class LessThanNode(ComparisonOperator):
     def __init__(self, *args, **kwargs):
         super(LessThanNode, self).__init__(*args, **kwargs)
