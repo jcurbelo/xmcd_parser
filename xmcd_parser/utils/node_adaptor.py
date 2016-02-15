@@ -1,3 +1,4 @@
+# coding=utf-8
 try:
     from xmcd_parser.ast.ast import *
 except ImportError:
@@ -27,11 +28,16 @@ keywords = {
     'sin': lambda el, s: SinFuncNode(operator_name='sin', expression_list=el, scope=s),
 }
 
+literals = {
+    'real': lambda rt, xa, s: FloatNode(raw_text=rt, xml_attr=xa, scope=s),
+    'str': lambda rt, xa, s: StrNode(raw_text=rt, xml_attr=xa, scope=s),
+}
+
 
 def _literal(el, scope):
-    # Currently only converts to FloatNode
-    # TODO: Find if there are more 'literal' values such as true, false, <string>, etc
-    return FloatNode(raw_text=el.text, xml_attr=el.attrib, scope=scope)
+    # Removing namespace
+    tag = el.tag.split('}')[1]
+    return literals[tag](el.text, el.attrib, scope)
 
 
 def _identifier(el, scope):
@@ -70,6 +76,8 @@ def _definition(els, scope):
 def adaptor(el, scope):
     if 'real' in el.tag:
         return _literal(el, scope)
+    if 'str' in el.tag:
+        return _literal(el, scope)
     if 'id' in el.tag:
         return _identifier(el, scope)
     if 'define' in el.tag:
@@ -85,5 +93,5 @@ def adaptor(el, scope):
         return [adaptor(e, scope) for e in el.getchildren()]
     if 'provenance' in el.tag:
         return adaptor(el.getchildren()[-1], scope)
-    # if 'eval' in el.tag:
-    #     return True
+        # if 'eval' in el.tag:
+        #     return True

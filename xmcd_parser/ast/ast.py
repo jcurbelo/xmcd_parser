@@ -1,3 +1,4 @@
+# coding=utf-8
 import math
 
 
@@ -22,7 +23,9 @@ class InstructionNode(ExpressionNode):
     """
     Expression that returns a value
     """
-    pass
+
+    def bool_eval(self, *args, **kwargs):
+        return False
 
 
 class IfThenElseNode(InstructionNode):
@@ -31,13 +34,23 @@ class IfThenElseNode(InstructionNode):
         self.cond = kwargs.get('cond', None)
         self.then_expr = kwargs.get('then_expr', None)
         self.else_expr = kwargs.get('else_expr', None)
+        self.cond_value = False
+
+    def bool_eval(self, *args, **kwargs):
+        return self.cond_value
 
     def eval(self, *args, **kwargs):
         super(IfThenElseNode, self).eval(*args, **kwargs)
-        cond_value = self.cond.bool_eval()
+        c = self.cond
+        # Several conditions assuming OR logical operator
+        if type(c) is list:
+            self.cond_value = any([e.eval() for e in c])
+        else:
+            self.cond_value = c.bool_eval()
         # if the condition was True, then we evaluate the expression
-        # and return its value as result, otherwise we return False
-        if cond_value:
+        # and return its value as result, otherwise we return the
+        # evaluation of else_expr (if exists)
+        if self.cond_value:
             return self.then_expr.eval()
         if self.else_expr:
             return self.else_expr.eval()
@@ -82,12 +95,12 @@ class IdNode(ExpressionNode):
     def eval(self, *args, **kwargs):
         super(IdNode, self).eval(*args, **kwargs)
         value = self.scope.get(self.id, None)
-        if not value:
+        if value is None:
             raise ValueError('{0} has no value for {1}'.format(type(self), self.id))
         return value
 
     def get_id(self, *args, **kwargs):
-        id = self.raw_text or 'UNKNOWN'
+        id = self.raw_text.encode('utf8') or 'UNKNOWN'
         if 'subscript' in self.xml_attr:
             return '{0}_{1}'.format(id, self.xml_attr['subscript'])
         return id
@@ -179,6 +192,7 @@ class EqualNode(ComparisonOperator):
 class MathFuncNode(InstructionNode, ParamsNodeMixin):
     def __init__(self, *args, **kwargs):
         super(MathFuncNode, self).__init__(*args, **kwargs)
+        ParamsNodeMixin.__init__(self, *args, **kwargs)
         self.func_name = kwargs.get('func_name', None)
         self.func = None
 
@@ -219,19 +233,23 @@ class CotFuncNode(MathFuncNode):
         self.func = lambda x: 1 / math.tan(x)
 
 
-class LiteralNode(ExpressionNode):
-    pass
-
-
-class FloatNode(LiteralNode):
+class LiteralNode(InstructionNode):
     def str_tree(self, depth):
         return '{2}<{0}>: {1}'.format(self.__class__.__name__,
                                       self.eval(),
                                       '\t' * depth)
 
+
+class FloatNode(LiteralNode):
     def eval(self, *args, **kwargs):
         super(FloatNode, self).eval(*args, **kwargs)
         return float(self.raw_text)
+
+
+class StrNode(LiteralNode):
+    def eval(self, *args, **kwargs):
+        super(StrNode, self).eval(*args, **kwargs)
+        return self.raw_text
 
 
 class AssignmentNode(ExpressionNode):
@@ -262,9 +280,15 @@ class DefinitionNode(AssignmentNode):
         id = self.left.id
         b = self.body
         if type(b) is list:
-            # Get the first element that has a value
-            # TODO: Find Lazy Evaluation solution
-            value = next(v for v in [n.eval() for n in b] if v)
+            # Get the first element that has a value and its true
+            current = None
+            for el in b:
+                t = (el.eval(), el.bool_eval())
+                if t[0] is not None and t[0] != False:  # Keep in mind that 0.0 value count as False
+                    current = t[0]
+                    if t[1]:
+                        break
+            value = current
         else:
             value = b.eval()
         self.scope[id] = value
