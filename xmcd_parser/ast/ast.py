@@ -239,6 +239,13 @@ class CotFuncNode(MathFuncNode):
         self.func = lambda x: 1 / math.tan(x)
 
 
+# MinusUnaryOperator
+class NegFuncNode(MathFuncNode):
+    def __init__(self, *args, **kwargs):
+        super(NegFuncNode, self).__init__(*args, **kwargs)
+        self.func = lambda x: -x
+
+
 class LiteralNode(InstructionNode):
     def str_tree(self, depth):
         return '{2}<{0}>: {1}'.format(self.__class__.__name__,

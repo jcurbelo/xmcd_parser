@@ -27,6 +27,7 @@ keywords = {
     'tan': lambda el, s: TanFuncNode(operator_name='tan', expression_list=el, scope=s),
     'cos': lambda el, s: CosFuncNode(operator_name='cos', expression_list=el, scope=s),
     'sin': lambda el, s: SinFuncNode(operator_name='sin', expression_list=el, scope=s),
+    'neg': lambda el, s: NegFuncNode(operator_name='neg', expression_list=el, scope=s),
 }
 
 literals = {
@@ -90,7 +91,7 @@ def adaptor(el, scope):
     if 'ifThen' in el.tag:
         return _cond_instruction(el.getchildren(), scope)
     # List of instructions
-    if 'program' in el.tag:
+    if 'program' in el.tag or 'otherwise' in el.tag:
         return [adaptor(e, scope) for e in el.getchildren()]
     if 'provenance' in el.tag:
         return adaptor(el.getchildren()[-1], scope)
