@@ -3,7 +3,8 @@ try:
 except ImportError:
     from ast.ast import *
 
-operators = {
+keywords = {
+    # Math Operators
     'div': lambda el, s: DivNode(operator_name='div', expression_list=el, scope=s),
     'mult': lambda el, s: MultNode(operator_name='mult', expression_list=el, scope=s),
     'plus': lambda el, s: PlusNode(operator_name='plus', expression_list=el, scope=s),
@@ -12,9 +13,18 @@ operators = {
     'min': lambda el, s: MinNode(operator_name='div', expression_list=el, scope=s),
     'max': lambda el, s: MaxNode(operator_name='max', expression_list=el, scope=s),
     'sqrt': lambda el, s: SqrtNode(operator_name='sqrt', expression_list=el, scope=s),
+    # Instruction Funcs
+    'if': lambda el, s: IfThenElseNode(cond=el[0], then_expr=el[1], else_expr=el[2] if len(el) > 2 else None),
+    # Logical Operators
     'lessOrEqual': lambda el, s: LessOrEqualNode(operator_name='less_or_equal', expression_list=el, scope=s),
     'lessThan': lambda el, s: LessOrEqualNode(operator_name='less_than', expression_list=el, scope=s),
     'greaterThan': lambda el, s: GreaterThanNode(operator_name='greater_than', expression_list=el, scope=s),
+    'equal': lambda el, s: EqualNode(operator_name='equal', expression_list=el, scope=s),
+    # Math Funcs
+    'cot': lambda el, s: CotFuncNode(operator_name='cot', expression_list=el, scope=s),
+    'tan': lambda el, s: TanFuncNode(operator_name='tan', expression_list=el, scope=s),
+    'cos': lambda el, s: CosFuncNode(operator_name='cos', expression_list=el, scope=s),
+    'sin': lambda el, s: SinFuncNode(operator_name='sin', expression_list=el, scope=s),
 }
 
 
@@ -41,14 +51,14 @@ def _instruction(els, scope):
             el_list += el.getchildren()
         else:
             el_list.append(el)
-    return operators[tag]([adaptor(el, scope) for el in el_list], scope)
+    return keywords[tag]([adaptor(el, scope) for el in el_list], scope)
 
 
 def _cond_instruction(els, scope):
     # IfThen nodes etc
     cond = els[0]
     expr = els[1]
-    return IfThenNode(scope=scope, cond=adaptor(cond, scope), expr=adaptor(expr, scope))
+    return IfThenElseNode(scope=scope, cond=adaptor(cond, scope), then_expr=adaptor(expr, scope))
 
 
 def _definition(els, scope):
@@ -73,3 +83,7 @@ def adaptor(el, scope):
     # List of instructions
     if 'program' in el.tag:
         return [adaptor(e, scope) for e in el.getchildren()]
+    if 'provenance' in el.tag:
+        return adaptor(el.getchildren()[-1], scope)
+    # if 'eval' in el.tag:
+    #     return True

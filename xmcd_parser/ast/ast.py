@@ -1,3 +1,6 @@
+import math
+
+
 class ExpressionNode(object):
     """
     Abstract class from which all nodes inherits from
@@ -22,27 +25,35 @@ class InstructionNode(ExpressionNode):
     pass
 
 
-class IfThenNode(InstructionNode):
+class IfThenElseNode(InstructionNode):
     def __init__(self, *args, **kwargs):
-        super(IfThenNode, self).__init__(*args, **kwargs)
+        super(IfThenElseNode, self).__init__(*args, **kwargs)
         self.cond = kwargs.get('cond', None)
-        self.expr = kwargs.get('expr', None)
+        self.then_expr = kwargs.get('then_expr', None)
+        self.else_expr = kwargs.get('else_expr', None)
 
     def eval(self, *args, **kwargs):
-        super(IfThenNode, self).eval(*args, **kwargs)
+        super(IfThenElseNode, self).eval(*args, **kwargs)
         cond_value = self.cond.bool_eval()
         # if the condition was True, then we evaluate the expression
         # and return its value as result, otherwise we return False
         if cond_value:
-            return self.expr.eval()
+            return self.then_expr.eval()
+        if self.else_expr:
+            return self.else_expr.eval()
         return False
 
 
-class OperatorNode(InstructionNode):
+class ParamsNodeMixin:
+    def __init__(self, *args, **kwargs):
+        self.expression_list = kwargs.get('expression_list', [])
+
+
+class OperatorNode(InstructionNode, ParamsNodeMixin):
     def __init__(self, *args, **kwargs):
         super(OperatorNode, self).__init__(*args, **kwargs)
+        ParamsNodeMixin.__init__(self, *args, **kwargs)
         self.operator_name = kwargs.get('operator_name', None)
-        self.expression_list = kwargs.get('expression_list', [])
         self.op_func = None
 
     def str_tree(self, depth):
@@ -154,6 +165,58 @@ class GreaterThanNode(ComparisonOperator):
     def __init__(self, *args, **kwargs):
         super(GreaterThanNode, self).__init__(*args, **kwargs)
         self.op_func = lambda x, y: x > y
+
+
+class EqualNode(ComparisonOperator):
+    def __init__(self, *args, **kwargs):
+        super(EqualNode, self).__init__(*args, **kwargs)
+        self.op_func = lambda x, y: x == y
+
+
+# Math Funcs
+
+
+class MathFuncNode(InstructionNode, ParamsNodeMixin):
+    def __init__(self, *args, **kwargs):
+        super(MathFuncNode, self).__init__(*args, **kwargs)
+        self.func_name = kwargs.get('func_name', None)
+        self.func = None
+
+    def str_tree(self, depth):
+        result = '{2}<{0}>: {1}'.format(self.func_name + 'Node',
+                                        self.eval(),
+                                        '\t' * depth)
+        for e in self.expression_list:
+            result += '\n{0}'.format(e.str_tree(depth + 1))
+        return result
+
+    def eval(self, *args, **kwargs):
+        super(MathFuncNode, self).eval(*args, **kwargs)
+        return self.func(*[e.eval() for e in self.expression_list])
+
+
+class CosFuncNode(MathFuncNode):
+    def __init__(self, *args, **kwargs):
+        super(CosFuncNode, self).__init__(*args, **kwargs)
+        self.func = math.cos
+
+
+class SinFuncNode(MathFuncNode):
+    def __init__(self, *args, **kwargs):
+        super(SinFuncNode, self).__init__(*args, **kwargs)
+        self.func = math.sin
+
+
+class TanFuncNode(MathFuncNode):
+    def __init__(self, *args, **kwargs):
+        super(TanFuncNode, self).__init__(*args, **kwargs)
+        self.func = math.tan
+
+
+class CotFuncNode(MathFuncNode):
+    def __init__(self, *args, **kwargs):
+        super(CotFuncNode, self).__init__(*args, **kwargs)
+        self.func = lambda x: 1 / math.tan(x)
 
 
 class LiteralNode(ExpressionNode):
