@@ -1,5 +1,6 @@
 # coding=utf-8
 import math
+import numpy as np
 
 
 class ExpressionNode(object):
@@ -82,7 +83,7 @@ class OperatorNode(InstructionNode, ParamsNodeMixin):
         return reduce(self.op_func, [e.eval() for e in self.expression_list])
 
 
-class IdNode(ExpressionNode):
+class IdNode(InstructionNode):
     def __init__(self, *args, **kwargs):
         super(IdNode, self).__init__(*args, **kwargs)
         self.id = self.get_id()
@@ -246,6 +247,12 @@ class NegFuncNode(MathFuncNode):
         self.func = lambda x: -x
 
 
+class AbsFuncNode(MathFuncNode):
+    def __init__(self, *args, **kwargs):
+        super(AbsFuncNode, self).__init__(*args, **kwargs)
+        self.func = lambda x: abs(x)
+
+
 class LiteralNode(InstructionNode):
     def str_tree(self, depth):
         return '{2}<{0}>: {1}'.format(self.__class__.__name__,
@@ -263,6 +270,23 @@ class StrNode(LiteralNode):
     def eval(self, *args, **kwargs):
         super(StrNode, self).eval(*args, **kwargs)
         return self.raw_text
+
+
+class MatrixNode(ExpressionNode, ParamsNodeMixin):
+    def __init__(self, *args, **kwargs):
+        super(MatrixNode, self).__init__(*args, **kwargs)
+        ParamsNodeMixin.__init__(self, *args, **kwargs)
+        l = len(self.expression_list)
+        self.rows_count = int(self.xml_attr.get('rows', l))
+        self.cols_count = int(self.xml_attr.get('cols', 1))
+        self.matrix = []
+        curr_row = []
+        for i in xrange(l):
+            curr_row.append(self.expression_list[i])
+            if i % self.cols_count == 0:
+                self.matrix.append(curr_row)
+                curr_row = []
+        self.np_matrix = np.array(self.matrix)
 
 
 class AssignmentNode(ExpressionNode):
@@ -287,23 +311,42 @@ class DefinitionNode(AssignmentNode):
                                                 self.body.str_tree(depth + 1),
                                                 '\t' * depth)
 
+    def _eval_matrix(self, *args, **kwargs):
+        # Assuming matrix with same length on left and body
+        left = self.left.np_matrix
+        body = self.body.np_matrix
+        results = []
+        for l, b in np.nditer([left, body], ['refs_ok']):
+            results.append(DefinitionNode(left=l.item(0), body=b.item(0), scope=self.scope).eval())
+        return results
+
+    def _eval_body(self, body):
+        if type(body) is list:
+            result = []
+            for el in body:
+                result += self._eval_body(el)
+            return result
+        return [(body.eval(), body.bool_eval())]
+
     def eval(self, *args, **kwargs):
         super(DefinitionNode, self).eval(*args, **kwargs)
+        if isinstance(self.left, MatrixNode):
+            return self._eval_matrix()
         # Assuming IdNode
         id = self.left.id
         b = self.body
         if type(b) is list:
             # Get the first element that has a value and its true
             current = None
-            for el in b:
-                t = (el.eval(), el.bool_eval())
-                if t[0] is not None and t[0] != False:  # Keep in mind that 0.0 value count as False
-                    current = t[0]
-                    if t[1]:
+            els = self._eval_body(b)
+            for value, bool_value in els:
+                if value is not None and value is not False:
+                    current = value
+                    if bool_value:
                         break
             value = current
         else:
-            value = b.eval()
+            value = self._eval_body(b)[0][0]
         self.scope[id] = value
         # Return evaluation
         return value

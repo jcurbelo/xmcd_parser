@@ -28,6 +28,10 @@ keywords = {
     'cos': lambda el, s: CosFuncNode(operator_name='cos', expression_list=el, scope=s),
     'sin': lambda el, s: SinFuncNode(operator_name='sin', expression_list=el, scope=s),
     'neg': lambda el, s: NegFuncNode(operator_name='neg', expression_list=el, scope=s),
+    'absval': lambda el, s: AbsFuncNode(operator_name='abs', expression_list=el, scope=s),
+    # MathCad Funcs
+    # TODO: Implement 'Find' function taking in mind 'Given' block
+    'Find': lambda el, s: MatrixNode(expression_list=el, scope=s)
 }
 
 literals = {
@@ -75,6 +79,10 @@ def _definition(els, scope):
     return DefinitionNode(scope=scope, left=adaptor(left, scope), body=adaptor(body, scope))
 
 
+def _matrix(el, scope):
+    return MatrixNode(xml_attr=el.attrib, scope=scope, expression_list=[adaptor(e, scope) for e in el.getchildren()])
+
+
 def adaptor(el, scope):
     if 'real' in el.tag:
         return _literal(el, scope)
@@ -95,5 +103,5 @@ def adaptor(el, scope):
         return [adaptor(e, scope) for e in el.getchildren()]
     if 'provenance' in el.tag:
         return adaptor(el.getchildren()[-1], scope)
-        # if 'eval' in el.tag:
-        #     return True
+    if 'matrix' in el.tag:
+        return _matrix(el, scope)
