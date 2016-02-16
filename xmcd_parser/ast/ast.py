@@ -149,12 +149,6 @@ class PowNode(OperatorNode):
         self.op_func = lambda x, y: x ** y
 
 
-class SqrtNode(OperatorNode):
-    def __init__(self, *args, **kwargs):
-        super(SqrtNode, self).__init__(*args, **kwargs)
-        self.op_func = lambda x, _: x ** (1 / 2.)
-
-
 class ComparisonOperator(OperatorNode):
     def eval(self, *args, **kwargs):
         return self.expression_list[-1].eval()
@@ -214,6 +208,12 @@ class MathFuncNode(InstructionNode, ParamsNodeMixin):
     def eval(self, *args, **kwargs):
         super(MathFuncNode, self).eval(*args, **kwargs)
         return self.func(*[e.eval() for e in self.expression_list])
+
+
+class SqrtFuncNode(MathFuncNode):
+    def __init__(self, *args, **kwargs):
+        super(SqrtFuncNode, self).__init__(*args, **kwargs)
+        self.func = math.sqrt
 
 
 class CosFuncNode(MathFuncNode):

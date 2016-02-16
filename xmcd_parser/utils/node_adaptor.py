@@ -13,7 +13,6 @@ keywords = {
     'pow': lambda el, s: PowNode(operator_name='pow', expression_list=el, scope=s),
     'min': lambda el, s: MinNode(operator_name='div', expression_list=el, scope=s),
     'max': lambda el, s: MaxNode(operator_name='max', expression_list=el, scope=s),
-    'sqrt': lambda el, s: SqrtNode(operator_name='sqrt', expression_list=el, scope=s),
     # Instruction Funcs
     'if': lambda el, s: IfThenElseNode(cond=el[0], then_expr=el[1], else_expr=el[2] if len(el) > 2 else None),
     # Logical Operators
@@ -23,12 +22,13 @@ keywords = {
     'greaterThan': lambda el, s: GreaterThanNode(operator_name='greater_than', expression_list=el, scope=s),
     'equal': lambda el, s: EqualNode(operator_name='equal', expression_list=el, scope=s),
     # Math Funcs
-    'cot': lambda el, s: CotFuncNode(operator_name='cot', expression_list=el, scope=s),
-    'tan': lambda el, s: TanFuncNode(operator_name='tan', expression_list=el, scope=s),
-    'cos': lambda el, s: CosFuncNode(operator_name='cos', expression_list=el, scope=s),
-    'sin': lambda el, s: SinFuncNode(operator_name='sin', expression_list=el, scope=s),
-    'neg': lambda el, s: NegFuncNode(operator_name='neg', expression_list=el, scope=s),
-    'absval': lambda el, s: AbsFuncNode(operator_name='abs', expression_list=el, scope=s),
+    'sqrt': lambda el, s: SqrtFuncNode(func_name='sqrt', expression_list=el, scope=s),
+    'cot': lambda el, s: CotFuncNode(func_name='cot', expression_list=el, scope=s),
+    'tan': lambda el, s: TanFuncNode(func_name='tan', expression_list=el, scope=s),
+    'cos': lambda el, s: CosFuncNode(func_name='cos', expression_list=el, scope=s),
+    'sin': lambda el, s: SinFuncNode(func_name='sin', expression_list=el, scope=s),
+    'neg': lambda el, s: NegFuncNode(func_name='neg', expression_list=el, scope=s),
+    'absval': lambda el, s: AbsFuncNode(func_name='abs', expression_list=el, scope=s),
     # MathCad Funcs
     # TODO: Implement 'Find' function taking in mind 'Given' block
     'Find': lambda el, s: MatrixNode(expression_list=el, scope=s)
