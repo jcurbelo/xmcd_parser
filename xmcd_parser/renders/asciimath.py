@@ -1,5 +1,5 @@
 # coding=utf-8
-from ast.ast import LiteralNode, IdNode
+from ast.ast import LiteralNode, IdNode, StrNode
 from base import ASTRender
 
 
@@ -41,6 +41,8 @@ class AsciiMathRender(ASTRender):
 
     def _render_literal_node(self, node):
         ASTRender._render_literal_node(self, node)
+        if isinstance(node, StrNode):
+            return 'tt"\'{}\'"'.format(node.raw_text)
         return node.raw_text
 
     def _render_math_func_node(self, node):
@@ -61,8 +63,7 @@ class AsciiMathRender(ASTRender):
 
     def _render_id_node(self, node):
         ASTRender._render_id_node(self, node)
-        # TODO: This is a "too much", try to escape only AsciiMath symbols
-        return '\\'.join(list(node.id))
+        return node.id
 
     def _render_operator_node(self, node):
         ASTRender._render_operator_node(self, node)

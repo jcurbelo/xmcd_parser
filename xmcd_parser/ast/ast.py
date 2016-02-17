@@ -204,7 +204,7 @@ class MinFuncNode(MathFuncNode):
         self.func = min
 
 
-class MaxFuncNode(OperatorNode):
+class MaxFuncNode(MathFuncNode):
     def __init__(self, *args, **kwargs):
         super(MaxFuncNode, self).__init__(*args, **kwargs)
         self.func = max
