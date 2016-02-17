@@ -103,7 +103,7 @@ class IdNode(InstructionNode):
     def get_id(self, *args, **kwargs):
         id = self.raw_text.encode('utf8') or 'UNKNOWN'
         if 'subscript' in self.xml_attr:
-            return '{0}_{1}'.format(id, self.xml_attr['subscript'])
+            return '{0}_{{{1}}}'.format(id, self.xml_attr['subscript'])
         return id
 
 
