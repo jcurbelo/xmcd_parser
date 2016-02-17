@@ -1,4 +1,5 @@
 # coding=utf-8
+from ast.ast import LiteralNode, IdNode
 from base import ASTRender
 
 
@@ -65,8 +66,17 @@ class AsciiMathRender(ASTRender):
     def _render_operator_node(self, node):
         ASTRender._render_operator_node(self, node)
         op = self.operator_symbols[node.operator_name]
-        result = reduce(lambda x, y: '({0}) {1} ({2})'.format(x, op, y),
-                        [self._render_adaptor(el) for el in node.expression_list])
+
+        def str_func(n, str_n):
+            return '{0}'.format(str_n) \
+                if isinstance(n, LiteralNode) or isinstance(n, IdNode) \
+                else '({0})'.format(str_n)
+
+        result = reduce(
+                lambda x, y: '{0} {1} {2}'.format(
+                        str_func(x[0], x[1]), op, str_func(y[0], y[1])),
+                [(el, self._render_adaptor(el)) for el in node.expression_list])
+
         return result
 
     def _render_if_then_else_node(self, node):
