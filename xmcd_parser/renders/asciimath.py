@@ -61,7 +61,8 @@ class AsciiMathRender(ASTRender):
 
     def _render_id_node(self, node):
         ASTRender._render_id_node(self, node)
-        return node.id
+        # TODO: This is a "too much", try to escape only AsciiMath symbols
+        return '\\'.join(list(node.id))
 
     def _render_operator_node(self, node):
         ASTRender._render_operator_node(self, node)
