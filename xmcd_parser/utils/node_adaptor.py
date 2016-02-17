@@ -11,8 +11,6 @@ keywords = {
     'plus': lambda el, s: PlusNode(operator_name='plus', expression_list=el, scope=s),
     'minus': lambda el, s: MinusNode(operator_name='minus', expression_list=el, scope=s),
     'pow': lambda el, s: PowNode(operator_name='pow', expression_list=el, scope=s),
-    'min': lambda el, s: MinNode(operator_name='div', expression_list=el, scope=s),
-    'max': lambda el, s: MaxNode(operator_name='max', expression_list=el, scope=s),
     # Instruction Funcs
     'if': lambda el, s: IfThenElseNode(cond=el[0], then_expr=el[1], else_expr=el[2] if len(el) > 2 else None),
     # Logical Operators
@@ -22,6 +20,8 @@ keywords = {
     'greaterThan': lambda el, s: GreaterThanNode(operator_name='greater_than', expression_list=el, scope=s),
     'equal': lambda el, s: EqualNode(operator_name='equal', expression_list=el, scope=s),
     # Math Funcs
+    'min': lambda el, s: MinFuncNode(func_name='min', expression_list=el, scope=s),
+    'max': lambda el, s: MaxFuncNode(func_name='max', expression_list=el, scope=s),
     'sqrt': lambda el, s: SqrtFuncNode(func_name='sqrt', expression_list=el, scope=s),
     'cot': lambda el, s: CotFuncNode(func_name='cot', expression_list=el, scope=s),
     'tan': lambda el, s: TanFuncNode(func_name='tan', expression_list=el, scope=s),

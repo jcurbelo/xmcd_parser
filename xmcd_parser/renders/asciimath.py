@@ -13,6 +13,8 @@ class AsciiMathRender(ASTRender):
             'sin': 'sin',
             'neg': 'neg',
             'absval': 'abs',
+            'min': 'min',
+            'max': 'max',
         }
         self.operator_symbols = {
             'div': '/',
@@ -20,8 +22,6 @@ class AsciiMathRender(ASTRender):
             'plus': '+',
             'minus': '-',
             'pow': '^',
-            'min': 'min',
-            'max': 'max',
             'less_or_equal': '<=',
             'greater_or_equal': '>=',
             'less_than': '<',
@@ -33,7 +33,7 @@ class AsciiMathRender(ASTRender):
         ASTRender._render_matrix_node(self, node)
         result = '['
         for row in node.np_matrix:
-            inner = reduce(lambda x, y: '{0},{1}'.format(x, y), [self._render_adaptor(el) for el in row])
+            inner = reduce(lambda x, y: '{0}, {1}'.format(x, y), [self._render_adaptor(el) for el in row])
             result += '[{0}]'.format(inner)
         result += ']'
         return result
@@ -45,7 +45,7 @@ class AsciiMathRender(ASTRender):
     def _render_math_func_node(self, node):
         ASTRender._render_math_func_node(self, node)
         func = self.func_symbols[node.func_name]
-        func += '({0})'.format(reduce(lambda x, y: '{0},{1}'.format(x, y),
+        func += '({0})'.format(reduce(lambda x, y: '{0}, {1}'.format(x, y),
                                       [self._render_adaptor(el) for el in node.expression_list]))
         return func
 
@@ -65,7 +65,7 @@ class AsciiMathRender(ASTRender):
     def _render_operator_node(self, node):
         ASTRender._render_operator_node(self, node)
         op = self.operator_symbols[node.operator_name]
-        result = reduce(lambda x, y: '({0}){1}({2})'.format(x, op, y),
+        result = reduce(lambda x, y: '({0}) {1} ({2})'.format(x, op, y),
                         [self._render_adaptor(el) for el in node.expression_list])
         return result
 
@@ -80,4 +80,4 @@ class AsciiMathRender(ASTRender):
 
     def _render_definition_node(self, node):
         ASTRender._render_definition_node(self, node)
-        return '{0}:={1}'.format(self._render_adaptor(node.left), self._render_adaptor(node.body))
+        return '{0} := {1}'.format(self._render_adaptor(node.left), self._render_adaptor(node.body))

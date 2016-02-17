@@ -107,18 +107,6 @@ class IdNode(InstructionNode):
         return id
 
 
-class MinNode(OperatorNode):
-    def __init__(self, *args, **kwargs):
-        super(MinNode, self).__init__(*args, **kwargs)
-        self.op_func = lambda x, y: min(x, y)
-
-
-class MaxNode(OperatorNode):
-    def __init__(self, *args, **kwargs):
-        super(MaxNode, self).__init__(*args, **kwargs)
-        self.op_func = lambda x, y: max(x, y)
-
-
 class DivNode(OperatorNode):
     def __init__(self, *args, **kwargs):
         super(DivNode, self).__init__(*args, **kwargs)
@@ -208,6 +196,18 @@ class MathFuncNode(InstructionNode, ParamsNodeMixin):
     def eval(self, *args, **kwargs):
         super(MathFuncNode, self).eval(*args, **kwargs)
         return self.func(*[e.eval() for e in self.expression_list])
+
+
+class MinFuncNode(MathFuncNode):
+    def __init__(self, *args, **kwargs):
+        super(MinFuncNode, self).__init__(*args, **kwargs)
+        self.func = min
+
+
+class MaxFuncNode(OperatorNode):
+    def __init__(self, *args, **kwargs):
+        super(MaxFuncNode, self).__init__(*args, **kwargs)
+        self.func = max
 
 
 class SqrtFuncNode(MathFuncNode):
