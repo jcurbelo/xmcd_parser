@@ -57,8 +57,8 @@ class AsciiMathRender(ASTRender):
         result = '{'
         l = len(node)
         for i in xrange(l - 1):
-            result += '({0} text(,)),'.format(self._render_adaptor(node[i]))
-        result += '({0}.):}}'.format(self._render_adaptor(node[-1]))
+            result += '({0}),'.format(self._render_adaptor(node[i]))
+        result += '({0}):}}'.format(self._render_adaptor(node[-1]))
         return result
 
     def _render_id_node(self, node):
@@ -83,7 +83,7 @@ class AsciiMathRender(ASTRender):
 
     def _render_if_then_else_node(self, node):
         ASTRender._render_if_then_else_node(self, node)
-        result = '{0} , if {1}{2}'.format(
+        result = '{0} if {1}{2}'.format(
                 self._render_adaptor(node.then_expr),
                 self._render_adaptor(node.cond),
                 '  text(otherwise)  {}'.format(
