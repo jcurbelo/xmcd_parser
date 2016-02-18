@@ -1,3 +1,4 @@
+# coding=utf-8
 from ast.ast import IdNode, DefinitionNode, LiteralNode
 from renders.html.base import HTMLRender
 
@@ -86,8 +87,10 @@ class BootstrapRender(HTMLRender):
         return self._render_tag(tree, 'sub')
 
     def _render_tag(self, tree, tag, **kwargs):
-        children = tree.getchildren()
-        inner = tree.text
+        children = list(tree)
+        inner = ''
+        text = tree.text or ''
+        tail = tree.tail or ''
         attrs = kwargs.get('attrs', None)
         str_attrs = ''
         if attrs:
@@ -96,9 +99,11 @@ class BootstrapRender(HTMLRender):
                                 attrs.iterkeys()])
             str_attrs = ' {}'.format(str_attrs)
         if children:
-            inner = reduce(lambda x, y: '{0}\n{1}'.format(x, y), [self._render_adaptor(el) for el in children])
-            if inner:
-                inner = inner.decode('utf-8')
-        if inner is None:
-            inner = ''
-        return '<{0}{2}>{1}</{0}>'.format(tag, inner.encode('utf-8'), str_attrs)
+            inner = reduce(lambda x, y: '{0}\n{1}'.format(x, y), [self._render_adaptor(el) for el in children]) or ''
+            inner = inner.decode('utf-8')
+        return '<{0}{2}>{3}{1}</{0}>{4}'.format(
+                tag,
+                inner.encode('utf-8'),
+                str_attrs,
+                text.encode('utf-8'),
+                tail.encode('utf-8'))
