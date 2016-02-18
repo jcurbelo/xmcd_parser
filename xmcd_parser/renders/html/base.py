@@ -10,27 +10,31 @@ class HTMLRender(object):
         return self._render_adaptor(self.root)
 
     def _render_adaptor(self, tree):
-        if 'region' in tree.tag:
+
+        tag = tree.tag.split('}')[1]
+        if 'regions' == tag:
+            return self._render_regions(tree)
+        if 'region' == tag:
             return self._render_region(tree)
-        if 'text' in tree.tag:
+        if 'text' == tag:
             return self._render_text(tree)
-        if 'p' in tree.tag:
+        if 'p' == tag:
             return self._render_p(tree)
-        if 'f' in tree.tag:
+        if 'f' == tag:
             return self._render_f(tree)
-        if 'b' in tree.tag:
+        if 'b' == tag:
             return self._render_b(tree)
-        if 'inlineAttr' in tree.tag:
+        if 'inlineAttr' == tag:
             return self._render_inline_attr(tree)
-        if 'sub' in tree.tag:
+        if 'sub' == tag:
             return self._render_sub(tree)
-        if 'math' in tree.tag:
+        if 'sub' == tag:
+            return self._render_sup(tree)
+        if 'math' == tag:
             return self._render_math(tree)
+        return ''
 
     def _render_region(self, tree):
-        pass
-
-    def _render_paragraph(self, tree):
         pass
 
     def _render_math(self, tree):
@@ -52,4 +56,10 @@ class HTMLRender(object):
         pass
 
     def _render_text(self, tree):
+        pass
+
+    def _render_regions(self, tree):
+        pass
+
+    def _render_sup(self, tree):
         pass
