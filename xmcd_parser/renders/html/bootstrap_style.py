@@ -1,4 +1,4 @@
-from ast.ast import IdNode, DefinitionNode
+from ast.ast import IdNode, DefinitionNode, LiteralNode
 from renders.html.base import HTMLRender
 
 
@@ -15,7 +15,7 @@ class BootstrapRender(HTMLRender):
 
     def _render_b(self, tree):
         super(BootstrapRender, self)._render_b(tree)
-        self._render_tag(tree, 'b')
+        return self._render_tag(tree, 'b')
 
     def _render_regions(self, tree):
         super(BootstrapRender, self)._render_regions(tree)
@@ -34,9 +34,12 @@ class BootstrapRender(HTMLRender):
         render = self.ast_render(node)
         id, rendered_id = '', ''
 
+        disabled = ''
         if isinstance(node, DefinitionNode):
             id = node.left.id
             rendered_id = self.ast_render(node.left).render()
+            if not isinstance(node.body, LiteralNode):
+                disabled = 'disabled'
         try:
             value = node.eval()
         except Exception as e:
@@ -49,7 +52,7 @@ class BootstrapRender(HTMLRender):
                             <div class="col col-md-4">
                                 <div class="input-group">
                                     <span class="input-group-addon">{3}</span>
-                                    <input id="{0}" name="{0}" value={1} title="Input Data" type="text" class="form-control" placeholder="Input">
+                                    <input id="{0}" name="{0}" value={1} title="Input Data" type="text" class="form-control" {4}>
                                 </div>
                             </div>
 
@@ -59,8 +62,7 @@ class BootstrapRender(HTMLRender):
                          </div>
                      </div>
                  </section>
-                 <br>
-                 """.format(id, value, rendered_value, rendered_id)
+                 """.format(id, value, rendered_value, rendered_id, disabled)
         return result
 
     def _render_inline_attr(self, tree):
@@ -77,19 +79,26 @@ class BootstrapRender(HTMLRender):
 
     def _render_sup(self, tree):
         super(BootstrapRender, self)._render_sup(tree)
-        self._render_tag(tree, 'sub')
+        return self._render_tag(tree, 'sub')
 
     def _render_sub(self, tree):
         super(BootstrapRender, self)._render_sub(tree)
-        self._render_tag(tree, 'sub')
+        return self._render_tag(tree, 'sub')
 
-    def _render_tag(self, tree, tag):
+    def _render_tag(self, tree, tag, **kwargs):
         children = tree.getchildren()
         inner = tree.text
+        attrs = kwargs.get('attrs', None)
+        str_attrs = ''
+        if attrs:
+            str_attrs = reduce(lambda x, y: '{0} {1}'.format(x, y),
+                               ['{0}="{1}"'.format(k, v) for k, v in
+                                attrs.iterkeys()])
+            str_attrs = ' {}'.format(str_attrs)
         if children:
             inner = reduce(lambda x, y: '{0}\n{1}'.format(x, y), [self._render_adaptor(el) for el in children])
             if inner:
                 inner = inner.decode('utf-8')
         if inner is None:
             inner = ''
-        return '<{0}>{1}</{0}>'.format(tag, inner.encode('utf-8'))
+        return '<{0}{2}>{1}</{0}>'.format(tag, inner.encode('utf-8'), str_attrs)
