@@ -30,6 +30,9 @@ class AsciiMathRender(ASTRender):
             'equal': '=',
         }
 
+    def render(self):
+        return '`{}`'.format(super(AsciiMathRender, self).render())
+
     def _render_matrix_node(self, node):
         ASTRender._render_matrix_node(self, node)
         result = '['
