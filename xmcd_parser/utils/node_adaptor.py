@@ -12,7 +12,7 @@ keywords = {
     'minus': lambda el, s: MinusNode(operator_name='minus', expression_list=el, scope=s),
     'pow': lambda el, s: PowNode(operator_name='pow', expression_list=el, scope=s),
     # Instruction Funcs
-    'if': lambda el, s: IfThenElseNode(cond=el[0], then_expr=el[1], else_expr=el[2] if len(el) > 2 else None),
+    'if': lambda el, s: IfThenElseNode(cond=el[0], then_expr=el[1], else_expr=el[2] if len(el) > 2 else None, scope=s),
     # Logical Operators
     'lessOrEqual': lambda el, s: LessOrEqualNode(operator_name='less_or_equal', expression_list=el, scope=s),
     'greaterOrEqual': lambda el, s: GreaterOrEqualNode(operator_name='greater_or_equal', expression_list=el, scope=s),
